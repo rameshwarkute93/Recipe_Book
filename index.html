@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Book</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --gradient-1: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+            --gradient-2: linear-gradient(135deg, #4ECDC4, #45B7AF);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #2d3436;
+            --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #f6d365 0%, #fda085 100%);
+            background-attachment: fixed;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        #recipeForm {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 1rem;
+            top: -0.5rem;
+            background: white;
+            padding: 0 0.5rem;
+            font-size: 0.8rem;
+            color: #666;
+            border-radius: 4px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+        }
+
+        button {
+            background: var(--gradient-1);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .search-container {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        #search {
+            max-width: 500px;
+            padding: 1.2rem 2rem;
+            border-radius: 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+        }
+
+        #recipeList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .recipe {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient-1);
+        }
+
+        .recipe:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .recipe h3 {
+            color: var(--text-color);
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .recipe-category {
+            display: inline-block;
+            background: var(--gradient-2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(78, 205, 196, 0.2);
+        }
+
+        .recipe-time {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recipe-time i {
+            color: #FF6B6B;
+        }
+
+        .recipe-ingredients {
+            background: rgba(78, 205, 196, 0.1);
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
+        .recipe-ingredients ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0.5rem 0;
+        }
+
+        .recipe-ingredients li {
+            padding: 0.3rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .recipe-ingredients li::before {
+            content: '•';
+            color: #4ECDC4;
+            position: absolute;
+            left: 0.5rem;
+        }
+
+        .recipe-steps {
+            background: rgba(255, 107, 107, 0.1);
+            padding: 1rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+
+        .recipe-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #FF4757, #FF6B81);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .edit-btn {
+            background: var(--gradient-2);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .recipe {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            #recipeForm {
+                padding: 1.5rem;
+            }
+
+            #recipeList {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Culinary Collection</h1>
+        
+        <form id="recipeForm">
+            <div class="form-group">
+                <label for="recipeName">Recipe Name</label>
+                <input type="text" id="recipeName" required>
+            </div>
+            <div class="form-group">
+                <label for="ingredients">Ingredients</label>
+                <textarea id="ingredients" required rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="steps">Instructions</label>
+                <textarea id="steps" required rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="cookingTime">Cooking Time (minutes)</label>
+                <input type="number" id="cookingTime" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Snacks">Snacks</option>
+                </select>
+            </div>
+            <button type="submit"><i class="fas fa-plus"></i> Add Recipe</button>
+        </form>
+
+        <div class="search-container">
+            <input type="text" id="search" placeholder="🔍 Search your recipes..." oninput="filterRecipes()">
+        </div>
+
+        <div id="recipeList"></div>
+    </div>
+    <script>
+        let recipes = [];
+
+        const recipeForm = document.getElementById("recipeForm");
+        const recipeList = document.getElementById("recipeList");
+        const searchInput = document.getElementById("search");
+
+        recipeForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("recipeName").value;
+            const ingredients = document.getElementById("ingredients").value
+                .split(",")
+                .map(item => item.trim())
+                .filter(item => item);
+            const steps = document.getElementById("steps").value;
+            const cookingTime = document.getElementById("cookingTime").value;
+            const category = document.getElementById("category").value;
+
+            const recipe = {
+                id: Date.now(),
+                name,
+                ingredients,
+                steps,
+                cookingTime,
+                category,
+                createdAt: new Date().toISOString()
+            };
+
+            recipes.unshift(recipe);
+            // Removed localStorage.setItem
+            renderRecipes();
+            recipeForm.reset();
+        });
+
+        function renderRecipes(filteredRecipes = recipes) {
+            recipeList.innerHTML = "";
+
+            if (filteredRecipes.length === 0) {
+                recipeList.innerHTML = `
+                    <div style="text-align: center; grid-column: 1/-1; padding: 2rem; color: #666;">
+                        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No recipes found. Start adding your favorite recipes!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredRecipes.forEach((recipe) => {
+                const recipeDiv = document.createElement("div");
+   
+                recipeDiv.className = "recipe";
+
+                recipeDiv.innerHTML = `
+                    <h3>${recipe.name}</h3>
+                    <div class="recipe-category">
+                        <i class="fas fa-tag"></i> ${recipe.category}
+                    </div>
+                    <div class="recipe-time">
+                        <i class="fas fa-clock"></i> ${recipe.cookingTime} minutes
+                    </div>
+                    <div class="recipe-ingredients">
+                        <strong><i class="fas fa-list"></i> Ingredients:</strong>
+                        <ul>
+                            ${recipe.ingredients.map(ing => `<li>${ing}</li>`).join("")}
+                        </ul>
+                    </div>
+                    <div class="recipe-steps">
+                        <strong><i class="fas fa-book"></i> Instructions:</strong>
+                        <p>${recipe.steps}</p>
+                    </div>
+                    <div class="recipe-buttons">
+                        <button class="edit-btn" onclick="editRecipe(${recipe.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="delete-btn" onclick="deleteRecipe(${recipe.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                `;
+
+                recipeList.appendChild(recipeDiv);
+            });
+        }
+
+        function deleteRecipe(id) {
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                recipes = recipes.filter((recipe) => recipe.id !== id);
+                // Removed localStorage.setItem
+                renderRecipes();
+            }
+        }
+
+        function editRecipe(id) {
+            const recipe = recipes.find((recipe) => recipe.id === id);
+            if (recipe) {
+                document.getElementById("recipeName").value = recipe.name;
+                document.getElementById("ingredients").value = recipe.ingredients.join(", ");
+                document.getElementById("steps").value = recipe.steps;
+                document.getElementById("cookingTime").value = recipe.cookingTime;
+                document.getElementById("category").value = recipe.category;
+
+                deleteRecipe(id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function filterRecipes() {
+            const query = searchInput.value.toLowerCase();
+            const filteredRecipes = recipes.filter((recipe) =>
+                recipe.name.toLowerCase().includes(query) ||
+                recipe.category.toLowerCase().includes(query) ||
+                recipe.ingredients.some(ing => ing.toLowerCase().includes(query))
+            );
+            renderRecipes(filteredRecipes);
+        }
+
+        // Initial render
+        renderRecipes();
+    </script>
+</body>
+</html>
