@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Book</title>
+    <link rel="stylesheet" href="styles.css">
+   
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe Book</h1>
+        
+        <div class="form-container">
+            <h2>Add a New Recipe</h2>
+            <input type="text" id="recipe-name" placeholder="Recipe Name" required>
+            <textarea id="recipe-ingredients" placeholder="Ingredients (comma-separated)" required></textarea>
+            <textarea id="recipe-steps" placeholder="Steps" required></textarea>
+            <input type="text" id="recipe-time" placeholder="Cooking Time (e.g., 30 mins)" required>
+            <select id="recipe-category">
+                <option value="Main Course">Main Course</option>
+                <option value="Desserts">Desserts</option>
+                <option value="Drinks">Drinks</option>
+            </select>
+            <button id="submit-btn" onclick="addRecipe()">Add Recipe</button>
+        </div>
+        
+        <h2>Search Recipes</h2>
+        <input type="text" id="search-box" placeholder="Search recipes..." onkeyup="searchRecipes()">
+        <select id="category-filter" onchange="filterByCategory()">
+            <option value="All">All Categories</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Drinks">Drinks</option>
+        </select>
+        <input type="hidden" id="recipe-id">
+
+        <div id="recipe-list" class="recipe-container">
+            <!-- Recipes will be dynamically added here -->
+        </div>
+
+        <div id="recipe-list"></div>
+    </div>
+
+
+    <script defer src="script.js"></script>
+</body>
+</html>
